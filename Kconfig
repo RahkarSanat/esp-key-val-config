@@ -1,30 +1,30 @@
 menu "Key Value Config"
 
 config KVC_BASE_PATH
-string "Max file length"
-default "configs"
-help
-File path prefix associated with the filesystem.
+  string "Max file length"
+  default "configs"
+  help
+    File path prefix associated with the filesystem.
 
 config KVC_MAX_FILES
-int "Max config file"
-range 1 100
-default 5
-help
-Maximum number of config files to work with.
+  int "Max config file"
+  range 1 100
+  default 5
+  help
+    Maximum number of config files to work with.
 
 config KVC_MAX_FILE_LEN
-int "Max file length"
-range 200 10000
-default 512
-help
-Maximum number of bytes that store on a config file.
+  int "Max file length"
+  range 200 10000
+  default 512
+  help
+    Maximum number of bytes that store on a config file.
 
 config KVC_MAX_LINE_LEN
-int "Max line length"
-range 3 256
-default 64
-help
-Maximum number of bytes that key and value will use.
+  int "Max line length"
+  range 3 256
+  default 64
+  help
+    Maximum number of bytes that key and value will use.
 
 endmenu
