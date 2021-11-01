@@ -30,7 +30,7 @@ extern "C" {
 
 esp_err_t mount_configs();
 void unmount_configs();
-esp_err_t create_configs(const char *file_name, const char *reset_value);
+esp_err_t create_configs(const char *file_name, const char *config_value);
 esp_err_t remove_configs(const char *file_name);
 esp_err_t list_configs(const char *file_name);
 esp_err_t set_config(const char *file_name, const char *key, const char *value);

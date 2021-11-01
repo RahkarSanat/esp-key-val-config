@@ -30,9 +30,9 @@ This program is free software: you can redistribute it and/or modify
 static const char *TAG = "key-val-config";
 
 esp_err_t mount_configs() {
-  ESP_LOGI(TAG, "mount SPIFFS at /%s", BASE_PATH);
+  ESP_LOGI(TAG, "mount SPIFFS at /" BASE_PATH);
   esp_vfs_spiffs_conf_t conf = {
-      .base_path = "/" CONFIG_KVC_BASE_PATH, .partition_label = NULL, .max_files = MAX_FILES, .format_if_mount_failed = true};
+      .base_path = "/" BASE_PATH, .partition_label = NULL, .max_files = MAX_FILES, .format_if_mount_failed = true};
 
   // Use settings defined above to initialize and mount SPIFFS filesystem.
   // Note: esp_vfs_spiffs_register is an all-in-one convenience function.
@@ -61,9 +61,13 @@ esp_err_t mount_configs() {
 }
 
 void unmount_configs() {
-  // All done, unmount partition and disable SPIFFS
-  esp_vfs_spiffs_unregister(NULL);
-  ESP_LOGI(TAG, "SPIFFS unmounted");
+  // unmount partition and disable SPIFFS
+  esp_err_t ret = esp_vfs_spiffs_unregister(NULL);
+  if (ret != ESP_OK) {
+    ESP_LOGW(TAG, "SPIFFS Already unmounted!");
+  } else {
+    ESP_LOGI(TAG, "SPIFFS unmounted");
+  }
 }
 
 static char *get_file_path(const char *file_name) {
@@ -72,21 +76,21 @@ static char *get_file_path(const char *file_name) {
   return buff;
 }
 
-esp_err_t create_configs(const char *file_name, const char *reset_value) {
+esp_err_t create_configs(const char *file_name, const char *config_value) {
   // Check if destination file exists before renaming
   struct stat st;
   if (stat(get_file_path(file_name), &st) == 0) {
     // file exists
-    ESP_LOGE(TAG, "Config file already created, please remove it before creating.");
-    return ESP_OK;
+    ESP_LOGE(TAG, "'%s' config file already exists, please remove it before creating.", file_name);
+    return ESP_FAIL;
   }
 
   FILE *f = fopen(get_file_path(file_name), "w+r");
   if (f == NULL) {
-    ESP_LOGE(TAG, "Failed to open file for reading and writing");
+    ESP_LOGE(TAG, "Failed to open '%s' config file for reading and writing", file_name);
     return ESP_FAIL;
   }
-  fprintf(f, reset_value);
+  fprintf(f, config_value);
 
   char line[MAX_LINE_LEN];
   while (fgets(line, sizeof(line), f))
@@ -102,10 +106,11 @@ esp_err_t remove_configs(const char *file_name) {
   if (stat(get_file_path(file_name), &st) == 0) {
     // Delete it if it exists
     unlink(get_file_path(file_name));
-    ESP_LOGW(TAG, "Config file removed!");
+    ESP_LOGW(TAG, "'%s' config file removed!", file_name);
     return ESP_OK;
   }
 
+  ESP_LOGW(TAG, "Failed to removed '%s' config file, Not Exists!", file_name);
   return ESP_FAIL;
 }
 
@@ -113,7 +118,7 @@ esp_err_t list_configs(const char *file_name) {
 
   FILE *f = fopen(get_file_path(file_name), "r");
   if (f == NULL) {
-    ESP_LOGE(TAG, "Failed to open file for reading");
+    ESP_LOGE(TAG, "Failed to open '%s' config file for reading", file_name);
     return ESP_FAIL;
   }
 
@@ -129,7 +134,7 @@ esp_err_t set_config(const char *file_name, const char *key, const char *value) 
 
   FILE *f = fopen(get_file_path(file_name), "r+w");
   if (f == NULL) {
-    ESP_LOGE(TAG, "Failed to open file for reading and writing");
+    ESP_LOGE(TAG, "Failed to open '%s' config file for reading and writing", file_name);
     return ESP_FAIL;
   }
 
@@ -151,10 +156,10 @@ esp_err_t set_config(const char *file_name, const char *key, const char *value) 
     fclose(f);
 
     unlink(get_file_path(file_name));
-    ESP_LOGW(TAG, "Config file removed!");
+    ESP_LOGW(TAG, "'%s' config file removed!", file_name);
     f = fopen(get_file_path(file_name), "w+r");
     if (f == NULL) {
-      ESP_LOGE(TAG, "Failed to open file for reading and writing");
+      ESP_LOGE(TAG, "Failed to open '%s' config file for reading and writing", file_name);
       return ESP_FAIL;
     }
     fprintf(f, file_buff);
@@ -170,7 +175,7 @@ esp_err_t unset_config(const char *file_name, const char *key) {
 
   FILE *f = fopen(get_file_path(file_name), "r+w");
   if (f == NULL) {
-    ESP_LOGE(TAG, "Failed to open file for reading and writing");
+    ESP_LOGE(TAG, "Failed to open '%s' config file for reading and writing", file_name);
     return ESP_FAIL;
   }
 
@@ -191,10 +196,10 @@ esp_err_t unset_config(const char *file_name, const char *key) {
     fclose(f);
 
     unlink(get_file_path(file_name));
-    ESP_LOGW(TAG, "Config file removed!");
+    ESP_LOGW(TAG, "'%s' config file file removed!", file_name);
     f = fopen(get_file_path(file_name), "w+r");
     if (f == NULL) {
-      ESP_LOGE(TAG, "Failed to open file for reading and writing");
+      ESP_LOGE(TAG, "Failed to open '%s' config file for reading and writing", file_name);
       return ESP_FAIL;
     }
     fprintf(f, file_buff);
@@ -209,7 +214,7 @@ esp_err_t unset_config(const char *file_name, const char *key) {
 char *get_config(const char *file_name, const char *key) {
   FILE *f = fopen(get_file_path(file_name), "r");
   if (f == NULL) {
-    ESP_LOGE(TAG, "Failed to open file for writing");
+    ESP_LOGE(TAG, "Failed to open '%s' config file for writing", file_name);
     return 0;
   }
 
