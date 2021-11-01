@@ -30,9 +30,9 @@ This program is free software: you can redistribute it and/or modify
 static const char *TAG = "key-val-config";
 
 esp_err_t mount_configs() {
-  ESP_LOGI(TAG, "mount SPIFFS at /" BASE_PATH);
+  ESP_LOGI(TAG, "mount SPIFFS at " BASE_PATH);
   esp_vfs_spiffs_conf_t conf = {
-      .base_path = "/" BASE_PATH, .partition_label = NULL, .max_files = MAX_FILES, .format_if_mount_failed = true};
+      .base_path = BASE_PATH, .partition_label = NULL, .max_files = MAX_FILES, .format_if_mount_failed = true};
 
   // Use settings defined above to initialize and mount SPIFFS filesystem.
   // Note: esp_vfs_spiffs_register is an all-in-one convenience function.

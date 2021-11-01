@@ -2,7 +2,7 @@ menu "Key Value Config"
 
 config KVC_BASE_PATH
   string "Base Path"
-  default "configs"
+  default "/configs"
   help
     File path prefix associated with the filesystem.
 
