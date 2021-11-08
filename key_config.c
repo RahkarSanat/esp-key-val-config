@@ -156,7 +156,6 @@ esp_err_t set_config(const char *file_name, const char *key, const char *value) 
     fclose(f);
 
     unlink(get_file_path(file_name));
-    ESP_LOGW(TAG, "'%s' config file removed!", file_name);
     f = fopen(get_file_path(file_name), "w+r");
     if (f == NULL) {
       ESP_LOGE(TAG, "Failed to open '%s' config file for reading and writing", file_name);
@@ -196,7 +195,6 @@ esp_err_t unset_config(const char *file_name, const char *key) {
     fclose(f);
 
     unlink(get_file_path(file_name));
-    ESP_LOGW(TAG, "'%s' config file file removed!", file_name);
     f = fopen(get_file_path(file_name), "w+r");
     if (f == NULL) {
       ESP_LOGE(TAG, "Failed to open '%s' config file for reading and writing", file_name);
