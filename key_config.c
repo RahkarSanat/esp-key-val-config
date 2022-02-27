@@ -16,14 +16,6 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "esp_err.h"
-#include "esp_log.h"
-#include "esp_spiffs.h"
-
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/unistd.h>
 
 #include "key_config.h"
 

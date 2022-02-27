@@ -19,6 +19,15 @@ This program is free software: you can redistribute it and/or modify
 #ifndef KEY_VAL_CONFIG_H
 #define KEY_VAL_CONFIG_H
 
+#include "esp_err.h"
+#include "esp_log.h"
+#include "esp_spiffs.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/unistd.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
