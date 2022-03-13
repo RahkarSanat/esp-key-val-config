@@ -16,7 +16,6 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 #include "key_config.h"
 
 static const char *TAG = "key-val-config";
@@ -201,12 +200,15 @@ esp_err_t unset_config(const char *file_name, const char *key) {
   return ESP_FAIL;
 }
 
-char *get_config(const char *file_name, const char *key) {
+esp_err_t get_config(const char *file_name, const char *key, char *res) {
   FILE *f = fopen(get_file_path(file_name), "r");
   if (f == NULL) {
     ESP_LOGE(TAG, "Failed to open '%s' config file for writing", file_name);
-    return 0;
+    return ESP_FAIL;
   }
+
+  if (res == NULL)
+    return ESP_OK;
 
   char line[MAX_LINE_LEN];
   while (fgets(line, sizeof(line), f)) {
@@ -219,14 +221,13 @@ char *get_config(const char *file_name, const char *key) {
     if (pos) {
       uint8_t eqindex = (uint8_t)(pos - (char *)line);
       if (strlen(key) == eqindex && !strncmp(line, key, strlen(key))) {
-        static char buff[20];
-        sprintf(buff, "%s", line + eqindex + 1);
+        sprintf(res, "%s", line + eqindex + 1);
         fclose(f);
-        return buff;
+        return ESP_OK;
       }
     }
   }
 
   fclose(f);
-  return 0;
+  return ESP_FAIL;
 }

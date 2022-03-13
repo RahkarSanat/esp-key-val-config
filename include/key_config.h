@@ -44,7 +44,7 @@ esp_err_t remove_configs(const char *file_name);
 esp_err_t list_configs(const char *file_name);
 esp_err_t set_config(const char *file_name, const char *key, const char *value);
 esp_err_t unset_config(const char *file_name, const char *key);
-char *get_config(const char *file_name, const char *key);
+esp_err_t get_config(const char *file_name, const char *key, char *res)
 
 #ifdef __cplusplus
 }
