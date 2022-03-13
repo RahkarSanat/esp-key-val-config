@@ -207,8 +207,10 @@ esp_err_t get_config(const char *file_name, const char *key, char *res) {
     return ESP_FAIL;
   }
 
-  if (res == NULL)
-    return ESP_OK;
+  if (res == NULL) {
+    ESP_LOGE(TAG, "res pointer can't be null");
+    return ESP_FAIL;
+  }
 
   char line[MAX_LINE_LEN];
   while (fgets(line, sizeof(line), f)) {
