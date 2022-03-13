@@ -32,6 +32,15 @@ This program is free software: you can redistribute it and/or modify
 extern "C" {
 #endif /* __cplusplus */
 
+/*
+    KEY VALUE CONFIG Expected Message
+*/
+typedef enum {
+  KV_OK = ESP_OK,
+  KV_FILE_DOES_NOT_EXISTS,
+  KV_CONFIG_DOES_NOT_EXISTS,
+} config_message_t;
+
 #define BASE_PATH CONFIG_KVC_BASE_PATH
 #define MAX_FILES CONFIG_KVC_MAX_FILES
 #define MAX_FILE_LEN CONFIG_KVC_MAX_FILE_LEN
@@ -44,7 +53,8 @@ esp_err_t remove_configs(const char *file_name);
 esp_err_t list_configs(const char *file_name);
 esp_err_t set_config(const char *file_name, const char *key, const char *value);
 esp_err_t unset_config(const char *file_name, const char *key);
-esp_err_t get_config(const char *file_name, const char *key, char *res)
+esp_err_t get_config(const char *file_name, const char *key, char *res);
+config_message_t config_exists(const char *file_name);
 
 #ifdef __cplusplus
 }

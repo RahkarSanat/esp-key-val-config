@@ -231,3 +231,11 @@ esp_err_t get_config(const char *file_name, const char *key, char *res) {
   fclose(f);
   return ESP_FAIL;
 }
+
+config_message_t config_exists(const char *file_name) {
+  struct stat st;
+  if (stat(get_file_path(file_name), &st) == 0) {
+    return KV_OK;
+  }
+  return KV_FILE_DOES_NOT_EXISTS;
+}
